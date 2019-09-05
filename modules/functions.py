@@ -135,6 +135,8 @@ def cut(ws_raw, ws_cut):
         return[vol_posi, cur_posi, vol_nega, cur_nega]
 
     i = 0
+    vol_max = []
+    vol_min = []
     for col in ws_raw.iter_cols(values_only=True):
         if i % 2 == 0:
             vol_temp = []
@@ -154,15 +156,17 @@ def cut(ws_raw, ws_cut):
             cur = cur_temp
             cut_res = cut(vol, cur)
             vol_posi = cut_res[0]
+            vol_max.append(max(vol_posi))
             cur_posi = cut_res[1]
             vol_nega = cut_res[2]
+            vol_min.append(min(vol_posi))
             cur_nega = cut_res[3]
             pushpack(ws_cut, vol_posi, 2*i-1)
             pushpack(ws_cut, cur_posi, 2*i)
             pushpack(ws_cut, vol_nega, 2*i+1)
             pushpack(ws_cut, cur_nega, 2*i+2)
         i = i + 1
-    return ws_cut
+    return ws_cut, [max(vol_min), min(vol_max)]
 
 
 def correct(ws_raw, ws_cor, resistance):
